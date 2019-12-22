@@ -1,3 +1,6 @@
+import java.util.Queue;
+import java.util.Stack;
+
 public class SingleLinkedListDemo {
 
     public static void main(String[] args) {
@@ -20,9 +23,98 @@ public class SingleLinkedListDemo {
 
         singleLinkedList.show();
 
-        singleLinkedList.delete(1);
+        reverserList(singleLinkedList.getHead());
+        System.out.println();
         System.out.println("***************");
+        System.out.println();
+
         singleLinkedList.show();
+
+        System.out.println();
+        System.out.println("***************");
+        System.out.println();
+
+        reversePrint(singleLinkedList.getHead());
+
+//        singleLinkedList.delete(1);
+//        System.out.println("***************");
+//        singleLinkedList.show();
+//
+//        System.out.println(getLength(singleLinkedList.getHead()));
+//
+//        HeroNode res = findLastIndexNode(singleLinkedList.getHead(),2);
+//        System.out.println(res);
+
+    }
+
+    /**
+     *
+     * @param head of the single linked list
+     * @return the number of the valid nodes
+     */
+    public static int getLength(HeroNode head){
+        if(head.next == null) return 0;
+
+        int length =0;
+
+        HeroNode current = head.next;
+        while(current != null){
+            length ++;
+            current = current.next;
+        }
+        return length;
+    }
+
+    //查找单链表中的倒数第 k 个结点 【新浪面试题】
+    public static  HeroNode findLastIndexNode (HeroNode head, int index){
+        if(head.next == null) return null;
+
+        int size = getLength(head);
+
+        if(index <= 0 || index > size) return null;
+
+        HeroNode cur = head.next;
+
+        for (int i = 0; i < size - index; i++) {
+            cur = cur.next;
+        }
+        return cur;
+    }
+
+    //单链表的反转【腾讯面试题】
+    public static void reverserList(HeroNode head){
+        if(head.next == null || head.next.next == null){
+            return;
+        }
+
+        HeroNode cur = head.next;
+        HeroNode next = null;
+        HeroNode reverseHead = new HeroNode(0,"","");
+
+        while(cur!=null){
+            next = cur.next;
+            cur.next = reverseHead.next;
+            reverseHead.next = cur;
+            cur = next;
+        }
+        head.next = reverseHead.next;
+    }
+
+    //从尾到头打印单链表【百度，要求方式1:反向遍历。方式2:Stack栈】
+
+    public static void reversePrint(HeroNode head){
+        if(head.next == null) return;
+
+        Stack<HeroNode> stack = new Stack<>();
+        HeroNode cur = head.next;
+        while(cur!=null){
+            stack.push(cur);
+            cur = cur.next;
+        }
+
+        while(stack.size()>0){
+            System.out.println(stack.pop());
+        }
     }
 }
 
@@ -74,7 +166,8 @@ class SingleLinkedList{
                 break;
             }
             if (temp.no == newHeroNode.no) {
-
+                    flag = true;
+                    break;
             }
             temp = temp.next;
         }
@@ -115,6 +208,10 @@ class SingleLinkedList{
             System.out.println(temp);
             temp = temp.next;
         }
+    }
+
+    public HeroNode getHead(){
+        return head;
     }
 }
 
