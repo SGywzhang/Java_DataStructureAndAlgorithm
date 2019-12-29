@@ -1,60 +1,89 @@
-public class BinaryTreeDemo {
+package threadedBinaryTreePackage;
 
-    public static void main(String[] args) {
-        BinaryTree binaryTree = new BinaryTree();
-        HeroNode root = new HeroNode(1, "宋江");
-        HeroNode node2 = new HeroNode(2, "吴用");
-        HeroNode node3 = new HeroNode(3, "卢俊义");
-        HeroNode node4 = new HeroNode(4, "林冲");
-        HeroNode node5 = new HeroNode(5, "关胜");
+public class ThreadBinaryTreeDemo {
+
+    public static void main(String[] args){
+
+        HeroNode root = new HeroNode(1, "tom");
+        HeroNode node2 = new HeroNode(3, "jack");
+        HeroNode node3 = new HeroNode(6, "smith");
+        HeroNode node4 = new HeroNode(8, "mary");
+        HeroNode node5 = new HeroNode(10, "king");
+        HeroNode node6 = new HeroNode(14, "dim");
 
         root.setLeft(node2);
         root.setRight(node3);
-        node3.setRight(node4);
-        node3.setLeft(node5);
-        binaryTree.setRoot(root);
+        node2.setLeft(node4);
+        node2.setRight(node5);
+        node3.setLeft(node6);
 
-        binaryTree.delNode(5);
-//        System.out.println("前序遍历");
-//        binaryTree.preOrder();
-//        System.out.println("中序遍历");
-//        binaryTree.inOrder();
-//        System.out.println("后序遍历");
-//        binaryTree.postOrder();
+        ThreadBinaryTree threadedBinaryTree = new ThreadBinaryTree();
+        threadedBinaryTree.setRoot(root);
+        threadedBinaryTree.threadedNodes();
 
-//        System.out.println("前序遍历方式~~~");
-//        HeroNode resNode = binaryTree.preOrderSearch(5);
-//        if (resNode != null) {
-//            System.out.printf("找到了，信息为 no=%d name=%s", resNode.getNo(), resNode.getName());
-//        } else {
-//            System.out.printf("没有找到 no = %d 的英雄", 5);
-//        }
-//
-//
-//        System.out.println("中序遍历方式~~~");
-//        resNode = binaryTree.inOrderSearch(5);
-//        if (resNode != null) {
-//            System.out.printf("找到了，信息为 no=%d name=%s", resNode.getNo(), resNode.getName());
-//        } else {
-//            System.out.printf("没有找到 no = %d 的英雄", 5);
-//        }
-//
-//        System.out.println("后序遍历方式~~~");
-//        resNode = binaryTree.postOrderSearch(5);
-//        if (resNode != null) {
-//            System.out.printf("找到了，信息为 no=%d name=%s", resNode.getNo(), resNode.getName());
-//        } else {
-//            System.out.printf("没有找到 no = %d 的英雄", 5);
-//        }
-    }
+        HeroNode leftNode = node5.getLeft();
+        HeroNode rightNode = node5.getRight();
+        System.out.println("10 号结点的前驱结点是 =" + leftNode);
+        System.out.println("10 号结点的后继结点是=" + rightNode);
+
+
+}
 }
 
-class BinaryTree{
+
+class ThreadBinaryTree{
 
     private HeroNode root;
 
     public void setRoot(HeroNode root){
         this.root = root;
+    }
+
+    private HeroNode pre = null;
+
+    public  void threadedNodes(){
+        this.threadedNodes(root);
+    }
+
+    public void threadList(){
+        HeroNode node = root;
+        while(node !=null){
+
+            while(node.getLeftType() == 0){
+                node = node.getLeft();
+            }
+            System.out.println(node);
+
+            while(node.getRightType() ==1){
+                node = node.getRight();
+                System.out.println(node);
+            }
+
+            node = node.getRight();
+        }
+    }
+
+    public  void threadedNodes(HeroNode node){
+
+        if(node == null){
+            return;
+        }
+
+        threadedNodes(node.getLeft());
+
+        if(node.getLeft() == null){
+            node.setLeft(pre);
+            node.setLeftType(1);
+        }
+
+        if(pre != null && pre.getRight() == null){
+            pre.setRight(node);
+            pre.setRightType(1);
+        }
+
+        pre = node;
+
+        threadedNodes(node.getRight());
     }
 
     public void preOrder(){
@@ -134,6 +163,29 @@ class HeroNode{
     private HeroNode left;
     private HeroNode right;
 
+    //1. 如果 leftType == 0 表示指向的是左子树, 如果 1 则表示指向前驱结点
+    // 2. 如果 rightType == 0 表示指向是右子树, 如果 1 表示指向后继结点
+    private int leftType;
+
+    public int getLeftType() {
+        return leftType;
+    }
+
+    public void setLeftType(int leftType) {
+        this.leftType = leftType;
+    }
+
+    public int getRightType() {
+        return rightType;
+    }
+
+    public void setRightType(int rightType) {
+        this.rightType = rightType;
+    }
+
+    private int rightType;
+
+
     public HeroNode(int no, String name){
         this.no = no;
         this.name = name;
@@ -182,8 +234,8 @@ class HeroNode{
     public void delNode(int no){
 
         if(this.left != null && this.left.no == no){
-                this.left = null;
-                return;
+            this.left = null;
+            return;
         }
 
         if(this.right != null && this.right.no == no){
@@ -289,5 +341,3 @@ class HeroNode{
         return res;
     }
 }
-
-
